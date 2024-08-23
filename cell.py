@@ -27,6 +27,9 @@ class Cell:
         self.has_top_wall: bool = has_top_wall
         self.has_bottom_wall: bool = has_bottom_wall
 
+    def get_coords(self):
+        return (self._x1, self._y1, self._x2, self._y2)
+
     def draw(self):
         lines = []
 
@@ -52,3 +55,18 @@ class Cell:
 
         for line in lines:
             self._win.draw_line(line, "white")
+
+    def draw_move(self, to_cell: "Cell", undo: bool = False):
+        match undo:
+            case True:
+                color = "red"
+            case _:
+                color = "gray"
+
+        (a_x1, a_y1, a_x2, a_y2) = self.get_coords()
+        (b_x1, b_y1, b_x2, b_y2) = to_cell.get_coords()
+
+        point_a = Point((a_x1 + a_x2) / 2, (a_y1 + a_y2) / 2)
+        point_b = Point((b_x1 + b_x2) / 2, (b_y1 + b_y2) / 2)
+
+        self._win.draw_line(Line(point_a, point_b), color)

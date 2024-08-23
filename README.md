@@ -1,8 +1,8 @@
 # Build a Maze Solver project
 
-Personal solution to the [Build a Maze Solver project](https://www.boot.dev/courses/build-maze-solver-python) from Boot.dev.
+Personal solution to the [Build a Maze Solver](https://www.boot.dev/courses/build-maze-solver-python) project from Boot.dev.
 
-## Tools used
+## Requirements
 
-- Python
+- Python (3.12+)
 - Tkinter
