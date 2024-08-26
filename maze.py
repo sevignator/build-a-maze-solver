@@ -7,23 +7,23 @@ class Maze:
 
     def __init__(
         self,
-        win: Window,
         x1: int,
         y1: int,
         num_rows: int,
         num_cols: int,
         cell_size_x: int,
         cell_size_y: int,
+        win: Window | None = None,
     ):
-        self._win: Window = win
         self._x1: int = x1
         self._y1: int = y1
         self._num_rows: int = num_rows
         self._num_cols: int = num_cols
         self._cell_size_x: int = cell_size_x
         self._cell_size_y: int = cell_size_y
-        self._cells: list = []
+        self._win: Window | None = win
 
+        self._cells: list = []
         self._create_cells()
 
     def _create_cells(self):
@@ -51,5 +51,8 @@ class Maze:
         self._animate()
 
     def _animate(self):
+        if self._win is None:
+            return
+
         self._win.redraw()
         time.sleep(0.05)
