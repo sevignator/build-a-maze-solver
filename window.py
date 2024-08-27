@@ -5,7 +5,7 @@ from line import Line
 class Window:
     def __init__(self, width: int, height: int):
         self._root = Tk()
-        self._canvas = Canvas(width=width, height=height)
+        self._canvas = Canvas(self._root, bg="white", width=width, height=height)
         self._is_running = False
 
         # Stop the window from running when the user closes it
@@ -26,5 +26,5 @@ class Window:
     def close(self):
         self._is_running = False
 
-    def draw_line(self, line: Line, fill_color: str):
+    def draw_line(self, line: Line, fill_color: str = "black"):
         line.draw(self._canvas, fill_color)

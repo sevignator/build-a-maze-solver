@@ -6,24 +6,16 @@ from window import Window
 class Cell:
     def __init__(
         self,
-        x1: int | None = None,
-        y1: int | None = None,
-        x2: int | None = None,
-        y2: int | None = None,
-        has_left_wall: bool = True,
-        has_right_wall: bool = True,
-        has_top_wall: bool = True,
-        has_bottom_wall: bool = True,
         win: Window | None = None,
     ):
-        self._x1: int | None = x1
-        self._y1: int | None = y1
-        self._x2: int | None = x2
-        self._y2: int | None = y2
-        self.has_left_wall: bool = has_left_wall
-        self.has_right_wall: bool = has_right_wall
-        self.has_top_wall: bool = has_top_wall
-        self.has_bottom_wall: bool = has_bottom_wall
+        self.has_left_wall: bool = True
+        self.has_right_wall: bool = True
+        self.has_top_wall: bool = True
+        self.has_bottom_wall: bool = True
+        self._x1: int | None = None
+        self._y1: int | None = None
+        self._x2: int | None = None
+        self._y2: int | None = None
         self._win: Window | None = win
 
     def get_coords(self):
@@ -37,30 +29,31 @@ class Cell:
         self._y1 = y1
         self._x2 = x2
         self._y2 = y2
-        lines = []
+
+        left_line = Line(Point(x1, y1), Point(x1, y2))
+        right_line = Line(Point(x2, y1), Point(x2, y2))
+        top_line = Line(Point(x1, y1), Point(x2, y1))
+        bottom_line = Line(Point(x1, y2), Point(x2, y2))
 
         if self.has_left_wall:
-            p1 = Point(self._x1, self._y1)
-            p2 = Point(self._x1, self._y2)
-            lines.append(Line(p1, p2))
+            self._win.draw_line(left_line)
+        else:
+            self._win.draw_line(left_line, "white")
 
         if self.has_right_wall:
-            p1 = Point(self._x2, self._y1)
-            p2 = Point(self._x2, self._y2)
-            lines.append(Line(p1, p2))
+            self._win.draw_line(right_line)
+        else:
+            self._win.draw_line(right_line, "white")
 
         if self.has_top_wall:
-            p1 = Point(self._x1, self._y1)
-            p2 = Point(self._x2, self._y1)
-            lines.append(Line(p1, p2))
+            self._win.draw_line(top_line)
+        else:
+            self._win.draw_line(top_line, "white")
 
         if self.has_bottom_wall:
-            p1 = Point(self._x1, self._y2)
-            p2 = Point(self._x2, self._y2)
-            lines.append(Line(p1, p2))
-
-        for line in lines:
-            self._win.draw_line(line, "white")
+            self._win.draw_line(bottom_line)
+        else:
+            self._win.draw_line(bottom_line, "white")
 
     def draw_move(self, to_cell: "Cell", undo: bool = False):
         if self._win is None:
