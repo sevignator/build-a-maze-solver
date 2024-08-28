@@ -12,6 +12,7 @@ class Cell:
         self.has_right_wall: bool = True
         self.has_top_wall: bool = True
         self.has_bottom_wall: bool = True
+        self.visited: bool = False
         self._x1: int | None = None
         self._y1: int | None = None
         self._x2: int | None = None

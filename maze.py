@@ -1,4 +1,6 @@
+import random
 import time
+
 from cell import Cell
 from window import Window
 
@@ -14,7 +16,9 @@ class Maze:
         cell_size_x: int,
         cell_size_y: int,
         win: Window | None = None,
+        seed: int | None = None,
     ):
+        self._cells: list[list[Cell]] = []
         self._x1: int = x1
         self._y1: int = y1
         self._num_rows: int = num_rows
@@ -22,10 +26,16 @@ class Maze:
         self._cell_size_x: int = cell_size_x
         self._cell_size_y: int = cell_size_y
         self._win: Window | None = win
+        self._seed = seed
 
-        self._cells: list[list[Cell]] = []
+        # Set seed for debugging purposes
+        if self._seed:
+            random.seed(seed)
+
         self._create_cells()
         self._break_entrance_and_exit()
+        self._break_walls_r(0, 0)
+        self._reset_cells_visited()
 
     def _create_cells(self):
         # Create columnss
@@ -68,3 +78,62 @@ class Maze:
         # Break exit
         self._cells[self._num_cols - 1][self._num_rows - 1].has_bottom_wall = False
         self._draw_cell(self._num_cols - 1, self._num_rows - 1)
+
+    def _break_walls_r(self, i: int, j: int):
+        current_cell = self._cells[i][j]
+        current_cell.visited = True
+
+        while True:
+            available_indexes = []
+
+            # Check if the left cell can be visited
+            if i > 0 and not self._cells[i - 1][j].visited:
+                available_indexes.append((i - 1, j))
+
+            # Check if the right cell can be visited
+            if i < self._num_cols - 1 and not self._cells[i + 1][j].visited:
+                available_indexes.append((i + 1, j))
+
+            # Check if the top cell can be visited
+            if j > 0 and not self._cells[i][j - 1].visited:
+                available_indexes.append((i, j - 1))
+
+            # Check if the bottom cell can be visited
+            if j < self._num_rows - 1 and not self._cells[i][j + 1].visited:
+                available_indexes.append((i, j + 1))
+
+            # Exit if there's nowhere to go
+            if len(available_indexes) == 0:
+                self._draw_cell(i, j)
+                return
+
+            # Pick a random available cell
+            direction_index = random.randrange(len(available_indexes))
+            next_index = available_indexes[direction_index]
+
+            # Break the right wall
+            if next_index[0] == i + 1:
+                self._cells[i][j].has_right_wall = False
+                self._cells[i + 1][j].has_left_wall = False
+
+            # Break the left wall
+            if next_index[0] == i - 1:
+                self._cells[i][j].has_left_wall = False
+                self._cells[i - 1][j].has_right_wall = False
+
+            # Break the top wall
+            if next_index[1] == j - 1:
+                self._cells[i][j].has_top_wall = False
+                self._cells[i][j - 1].has_bottom_wall = False
+
+            # Break the bottom wall
+            if next_index[1] == j + 1:
+                self._cells[i][j].has_bottom_wall = False
+                self._cells[i][j + 1].has_top_wall = False
+
+            self._break_walls_r(next_index[0], next_index[1])
+
+    def _reset_cells_visited(self):
+        for col in self._cells:
+            for cell in col:
+                cell.visited = False
